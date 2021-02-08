@@ -1,0 +1,113 @@
+---
+title: "CSDE 502 HW 3"
+author: "Colin Baynes (cbaynes@uw.edu)"
+date: "1/25/2021"
+output:
+  bookdown::html_document2:
+    number_sections: yes
+    self_contained: yes
+    code_folding: hide
+    toc: yes
+    toc_float:
+      collapsed: yes
+      smooth_scroll: no
+  html_document:
+    toc: yes
+    df_print: paged
+---
+```{r, include=F}
+rm(list=ls())
+```
+```{r create data, include=FALSE}
+gradpain <- c(rep(0,11), rep(1,1), rep(2,2), rep(3,6), rep(4,8), rep(5,10),
+ rep(6,8), rep(7,30), rep(8,10), rep(9,6), rep(10,2))
+```
+
+# How many graduate students are in the sample? 
+```{r setting up caption and digits, echo=F, warning=F}
+library(captioner)
+figure_nums <- captioner(prefix = "Figure")
+library(knitr)
+options(digits=2)
+```
+See _`r figure_nums(name = "Figure 1", display = "cite")`_
+
+```{r echo=F}
+barplot(table(gradpain), las=1, ylab="Frequency", xlab="Pain Scale",
+ main="How painful is graduate school?")
+```
+```{r, include=F}
+df.gradpain <- as.data.frame(gradpain)
+nrow(df.gradpain)
+```
+_`r figure_nums(name = "Figure 1", caption = "Students' rating of the painfulness of graduate school")`_
+
+There are `r nrow(df.gradpain)` graduate students in the sample.
+
+# What is the sample mean?
+```{r create function, include=F}
+# Function from Box 1
+d.vec <- gradpain
+n=5000
+q1.F <- NULL
+for (i in seq(from = 1, to = 94)){
+  s <- sample(x = d.vec, size = n, replace = TRUE)
+  m <- mean(s)
+q1.F <- c(q1.F, m, n) 
+return(list(length(q1.F), mean(q1.F)))
+}
+m1<-mean(q1.F)
+```
+The sample mean is approximately `r m`.
+
+# What is the mean of these 100 means? 
+```{r, include=F}
+set.seed(7)
+q2.F <- NULL
+for (i in seq(from = 1, to = 100)){
+  s <- sample(x = gradpain, size = length(gradpain), replace = TRUE)
+  m <- mean(s)
+q2.F <- c(q2.F, m)
+}
+m2<-mean(q2.F)
+sd2<-sd(q2.F)
+```
+The mean and standard deviation of these 100 means are approximately `r m2` and `r sd2` respectively.
+```{r, include=F}
+library(Rmisc)
+```
+```{r, include=F}
+set.seed(7)
+n=length(gradpain)
+num.samples <- 100
+q3.F <- NULL
+for (i in seq(from = 1, to = num.samples)){
+  s <- sample(x = d.vec, size = n, replace = TRUE)
+  m3 <- mean(s)
+  sd3 <- sd(s)
+  q3.F <- c(q3.F, s, n)
+  ci_95 <- Rmisc::CI(x=q3.F, ci = 0.95)
+  q3.Fii <- c(length(gradpain), num.samples, q3.F, sd, ci_95)
+return(list(n, num.samples, q3.F, sd, ci_95))
+}
+q3.Fii
+upper_ci<-5.93
+lower_ci<-4.83
+```
+# What does your function return for the mean of means?
+
+The function returns `r m3` as the mean of means.
+
+# What does your function return for the standard deviation of means?
+
+The function returns `r sd3` as the standard deviation of means.
+
+# What does your function return for the 95% confidence interval around the mean?
+
+The function returns `r lower_ci` and `r upper_ci` as the upper and lower bounds of the 95% confidence interval around the mean.
+
+# Source Code
+```{r comment='', echo=F}
+cat(readLines("C:/Users/Cbayn/Dropbox/CSDE 502/week 4/cbaynes_HW_04.Rmd"), sep = '\n')
+
+```
