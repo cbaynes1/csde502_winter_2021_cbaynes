@@ -45,6 +45,11 @@ _`r figure_nums(name = "Figure 1", caption = "Students' rating of the painfulnes
 There are `r nrow(df.gradpain)` graduate students in the sample.
 
 # What is the sample mean?
+*Tracked changes based on PH feedback:*
+```{r}
+mean_gradpain <- mean(gradpain) #In the version of the HW that I submitted responded with the text below.
+```
+*End of tracked changes.*
 ```{r create function, include=F}
 # Function from Box 1
 d.vec <- gradpain
